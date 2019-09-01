@@ -13,6 +13,6 @@ ex. python site_map.py https://www.mozilla.org 3 4
 $ env FLASK_APP=server.py flask run
 
 
-Supported request type - POST
-Parameters
+Supported request type - POST \
+Parameters:\
 url, max_depth, max_thread
