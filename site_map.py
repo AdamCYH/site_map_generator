@@ -133,10 +133,12 @@ class SiteMap:
                     if self.domain_pattern.match(found_url):
                         # check if it is valid url, if not we append the url and hope it will work.
                         # TODO this might not work, it should be improved.
-                        if not url_pattern.match(found_url):
-                            url_list.add(url + found_url)
-                        else:
+                        if found_url[:2] == "//":
+                            url_list.add("http:" + found_url)
+                        elif found_url[:4] == "http":
                             url_list.add(found_url)
+                        else:
+                            url_list.add(url + found_url)
                 except TypeError:
                     continue
             else:
