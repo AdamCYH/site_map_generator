@@ -4,6 +4,7 @@ import re
 import ssl
 import sys
 from multiprocessing.pool import ThreadPool
+from urllib.error import URLError
 from urllib.request import urlopen, HTTPError
 
 from bs4 import BeautifulSoup
@@ -75,7 +76,8 @@ class SiteMap:
                          "links": url_list,
                          "images": img_list}
             # extend the whole url list to the queue for next level of search
-            self.q.extend(url_list)
+            if type(url_list) is not str:
+                self.q.extend(url_list)
             # append search result of current object to the site_map
             self.json_site_map.append(curr_json)
             # add to visited set so no repeated search
@@ -94,21 +96,24 @@ class SiteMap:
         try:
             html = urlopen(url, context=ssl._create_unverified_context())
             if html.info().get_content_type() != "text/html":
-                print("Not a site")
+                print("[Error]Not a site")
                 return "Not a site", "N/A"
         except HTTPError as e:
             if e.code == 404:
-                print("404 site not found")
+                print("[Error]404 site not found")
                 return "404 site not found", "N/A"
             else:
-                print("Unknown error::: " + e.reason)
+                print("[Error]Unknown error::: " + e.reason)
                 return "Unknown error" + e.reason, "N/A"
         except UnicodeError:
-            print("Unicode error::: ")
+            print("[Error]Unicode error::: ")
             return "Unicode error", "N/A"
         except ValueError:
-            print("URL error")
+            print("[Error]URL error")
             return "URL error", "N/A"
+        except URLError as urle:
+            print("[Error]invalid url")
+            return "invalid url", "N/A"
 
         print("Reading contents...")
         soup = BeautifulSoup(html.read(), "html.parser")
@@ -167,10 +172,10 @@ class SiteMap:
 
 if __name__ == '__main__':
     print("Starting program")
-    # url = sys.argv[1]
-    # max_depth = int(sys.argv[2])
-    # max_thread = int(sys.argv[3])
-    # site_map_request = SiteMap(url, max_depth, max_thread)
-    site_map_request = SiteMap("https://www.mozilla.org", 3, 8)
+    url = sys.argv[1]
+    max_depth = int(sys.argv[2])
+    max_thread = int(sys.argv[3])
+    site_map_request = SiteMap(url, max_depth, max_thread)
+    # site_map_request = SiteMap("https://www.mozilla.org", 3, 8)
     site_map_request.build_site_map()
 
