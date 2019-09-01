@@ -2,6 +2,8 @@ This is a simple service that generates a site map of target url.
 
 Site with custmized tag is not supported. for example figure tag
 
+Please dont make depth too big, computation goes exponentially, 3 level is kind of the max for a large website.
+
 ## Run by terminal ##
 $ python site_map.py <url> <max_depth> <max_thread> \
 ex. python site_map.py https://www.mozilla.org 3 4
