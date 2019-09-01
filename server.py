@@ -11,5 +11,5 @@ def generate_site_map():
     url = request.form['url']
     max_depth = int(request.form['max_depth'])
     max_thread = int(request.form['max_thread'])
-
-    return site_map.build_site_map(url, max_depth, max_thread)
+    site_map_request = site_map.SiteMap(url, max_depth, max_thread)
+    return site_map_request.build_site_map()
